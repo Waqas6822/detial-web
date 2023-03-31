@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication</title>
+    <style>
+        body{background-color: aqua;text-align: center; color: crimson;}
+
+    </style>
+</head>
+<body>
+    <div id="authForm">
+        <h2>Sign Up or Sign In</h2>
+        <input type="email" placeholder="email" id="userEmail">
+        <input type="password" placeholder="password" id="userPassword"><br><br>
+        <button id="signupbtn">Sign up</button>
+        <button id="signinbtn">Sign in</button>
+    </div>
+    <div id="secretContant">
+        <h2>This is top secret information that you can only see  if</h2>
+        <h1>Authentication</h1>
+        <button id="signoutbtn">Sign out</button>
+    </div>
+
+
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+  import { getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut
+ } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAYiGi5ZHNKKw4Knt4mIdk_zSKaUhb8HjA",
+    authDomain: "react-8b510.firebaseapp.com",
+    databaseURL: "https://react-8b510-default-rtdb.firebaseio.com",
+    projectId: "react-8b510",
+    storageBucket: "react-8b510.appspot.com",
+    messagingSenderId: "280244895717",
+    appId: "1:280244895717:web:9dde917c906094abd8f90c"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth=getAuth(app)
+
+
+  const userEmail=document.querySelector("#userEmail");
+  const userPassword=document.querySelector("#userPassword");
+  const authForm=document.querySelector("#authForm");
+  const secretContant=document.querySelector("#secretContant");
+  const signupbtn=document.querySelector("#signupbtn");
+  const signinbtn=document.querySelector("#signinbtn");
+  const signoutbtn=document.querySelector("#signoutbtn");
+
+
+
+
+  secretContant.style.display='none';
+
+  const userSignup=async()=>{
+    const signUpEmail=userEmail.value;
+    const signUpPassword=userPassword.value;
+    createUserWithEmailAndPassword(auth,signUpEmail,signUpPassword)
+    .then((userCredential)=>{
+        const user=userCredential.user;
+        console.log(user);
+        alert("your account has been created!");
+    })
+    .catch((error)=>{
+        const errorcode=error.code;
+        const errorMsg=error.message;
+        console.log(errorcode+errorMsg)
+    })
+  }
+
+  const userSignin=async()=>{
+    const signInEmail=userEmail.value;
+    const signInPassword=userPassword.value;
+    signInWithEmailAndPassword(auth,signInEmail,signInPassword)
+    .then((userCredential)=>{
+        const user=userCredential.user;
+        alert("you have sign in succesfuly!");
+    })
+    .catch((error)=>{
+        const errorcode=error.code;
+        const errorMsg=error.message;
+        console.log(errorcode+errorMsg)
+    })
+  }
+
+  const checkAuthState=async()=>{
+    onAuthStateChanged(auth,user=>{
+        if(user){
+            authForm.style.display='none';
+            secretContant.style.display='block';
+        }
+        else{
+            authForm.style.display='block';
+            secretContant.style.display='none';
+        }
+    })
+  }
+
+  const userSignOut=async()=>{
+    await signOut(auth);
+  }
+checkAuthState();
+
+  signupbtn.addEventListener('click',userSignup);
+  signinbtn.addEventListener('click',userSignin);
+  signoutbtn.addEventListener('click',userSignOut);
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
